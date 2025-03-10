@@ -1,8 +1,6 @@
 package com.example.demo.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,22 +11,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "roles")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "vai_tro_id", referencedColumnName = "id")
-    private Role role;
+    @Column(name = "ma_role")
+    private String maRole;
 
-    @Column(name = "user_name")
-    private String userName;
-
-    @Column(name = "password")
-    private String password;
+    @Column(name = "ten_role")
+    private String tenRole;
 
     @Column(name = "trang_thai")
     private Integer trangThai;
