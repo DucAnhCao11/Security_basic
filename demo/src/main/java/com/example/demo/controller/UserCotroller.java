@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.DTO.Request.APIResponse;
 import com.example.demo.DTO.Request.UserCreationRequest;
 import com.example.demo.DTO.Request.UserUpdateRequest;
+import com.example.demo.DTO.Response.UserResponse;
 import com.example.demo.entities.User;
 import com.example.demo.services.UserServicce;
 import jakarta.validation.Valid;
@@ -20,42 +21,48 @@ public class UserCotroller {
     UserServicce userServicce;
 
     @PostMapping
-    APIResponse<User> addUser(@RequestBody @Valid UserCreationRequest request) {
-        APIResponse<User> apiResponse = new APIResponse<>();
+    APIResponse<UserResponse> addUser(@RequestBody @Valid UserCreationRequest request) {
+        APIResponse<UserResponse> apiResponse = new APIResponse<>();
         apiResponse.setData(userServicce.createUser(request));
         return apiResponse;
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<User>updateUser(@PathVariable int id
+    public APIResponse<UserResponse>updateUser(@PathVariable int id
             ,@Valid @RequestBody UserUpdateRequest request) {
-
-            User user = userServicce.updateUser(id, request);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        APIResponse<UserResponse> apiResponse = new APIResponse<>();
+        apiResponse.setData(userServicce.updateUser(id, request));
+            return apiResponse;
     }
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable int id) {
+    public APIResponse<String> deleteUser(@PathVariable int id) {
+        APIResponse<String> apiResponse = new APIResponse<>();
        try{
            userServicce.deleteUser(id);
-           return "User deleted";
+           apiResponse.setMessage("User deleted successfully");
+           return apiResponse;
        }catch (Exception e) {
-           return "User could not be deleted";
+           apiResponse.setMessage("Error deleting user");
+           return apiResponse;
        }
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = null;
+    public APIResponse<List<User>> getAllUsers() {
+        APIResponse<List<User>> apiResponse = new APIResponse<>();
         try{
-            users = userServicce.getAllUsers();
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            apiResponse.setData(userServicce.getAllUsers());
+            return apiResponse;
         }catch (Exception e) {
-            return new ResponseEntity<>(users, HttpStatus.NOT_FOUND);
+            apiResponse.setData(null);
+            return apiResponse;
         }
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable("id") int id) {
-        return userServicce.getUserById(id);
+    public APIResponse<UserResponse> getUserById(@PathVariable("id") int id) {
+        APIResponse<UserResponse> apiResponse = new APIResponse<>();
+        apiResponse.setData(userServicce.getUserById(id));
+        return apiResponse;
     }
 }

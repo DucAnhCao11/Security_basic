@@ -17,6 +17,7 @@ public enum ErrorCode {
     PASSWORD_ERROR(1004,
             "Password must start with a capital letter and must contain special characters " +
                     "and Username must be least 5 characters"),
+    USER_NOT_EXISTS(1005, "user not exists"),
     ;
 
     private int code;
