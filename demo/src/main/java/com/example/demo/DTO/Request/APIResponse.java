@@ -11,6 +11,7 @@ import lombok.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class APIResponse <T> {
+    @Builder.Default
     private int code = 1000;
     private String message;
     private T data;

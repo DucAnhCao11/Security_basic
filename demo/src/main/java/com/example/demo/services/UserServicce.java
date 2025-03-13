@@ -49,6 +49,8 @@ public class UserServicce {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new APPException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(user, rq);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
