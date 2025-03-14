@@ -10,11 +10,9 @@ import lombok.*;
 public class UserResponse {
     private Integer id;
 
-    private Integer idRole;
-
     private String userName;
 
-    private String password;
+    private String maRole;
 
     private Integer trangThai;
 }

@@ -5,6 +5,7 @@ import com.example.demo.DTO.Request.IntrospectRequest;
 import com.example.demo.DTO.Response.AuthenticationResponse;
 import com.example.demo.DTO.Response.IntrospectResponse;
 import com.example.demo.config.ENVConfig;
+import com.example.demo.entities.User;
 import com.example.demo.exceptions.APPException;
 import com.example.demo.exceptions.ErrorCode;
 import com.example.demo.repositories.UserRepository;
@@ -72,7 +73,7 @@ public class AuthService {
         if(!authenticated)
             throw new APPException(ErrorCode.PASSWORD_IS_INCORRECT);
 
-        var token = generateToken(authenticationRequest.getUserName());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -80,13 +81,13 @@ public class AuthService {
                 .build();
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet  = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUserName())
                 .issuer("Men_T-shirt")
                 .issueTime(new Date())
-                .claim("CustomClaim", "Custom")
+                .claim("scope", user.getRole().getMaRole())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .build();
 

@@ -4,12 +4,15 @@ import com.example.demo.DTO.Request.APIResponse;
 import com.example.demo.DTO.Request.UserCreationRequest;
 import com.example.demo.DTO.Request.UserUpdateRequest;
 import com.example.demo.DTO.Response.UserResponse;
-import com.example.demo.entities.User;
 import com.example.demo.services.UserServicce;
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 public class UserCotroller {
+    private static final Logger log = LoggerFactory.getLogger(UserCotroller.class);
     @Autowired
     UserServicce userServicce;
 
@@ -48,15 +52,13 @@ public class UserCotroller {
     }
 
     @GetMapping("/getAll")
-    public APIResponse<List<User>> getAllUsers() {
-        APIResponse<List<User>> apiResponse = new APIResponse<>();
-        try{
-            apiResponse.setData(userServicce.getAllUsers());
-            return apiResponse;
-        }catch (Exception e) {
-            apiResponse.setData(null);
-            return apiResponse;
-        }
+    public APIResponse<List<UserResponse>> getAllUsers() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("UserName:{}",authentication.getName());
+        log.info("Roles:{}", authentication.getAuthorities());
+        return APIResponse.<List<UserResponse>>builder()
+                .data(userServicce.getUsers())
+                .build();
     }
 
     @GetMapping("/{id}")
@@ -64,5 +66,12 @@ public class UserCotroller {
         APIResponse<UserResponse> apiResponse = new APIResponse<>();
         apiResponse.setData(userServicce.getUserById(id));
         return apiResponse;
+    }
+
+    @GetMapping("/myInfo")
+    public APIResponse<UserResponse> getMyInfo() {
+       return APIResponse.<UserResponse>builder()
+               .data(userServicce.getMyUserName())
+               .build();
     }
 }
